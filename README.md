@@ -1,4 +1,4 @@
-# Fluorescence
+# LIRF (Laser Induced Relativistic Fluorescence Calculator)
 
 A platform-independent Python application for calculating relativistic fluorescence-photon energies, angular distributions and laser excitation of fast ions.
 
