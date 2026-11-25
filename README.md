@@ -23,7 +23,7 @@ cd lirf
 
 ### 2. Create a virtual environment
 
-It is recommended to use a Python virtual environment to keep the project's dependencies separate from other Python installations.
+To create a Python virtual environment follow the description.
 
 On Linux and macOS:
 
