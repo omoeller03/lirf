@@ -1,6 +1,7 @@
 README.md
 pyproject.toml
 src/fluorescence/__init__.py
+src/fluorescence/__main__.py
 src/fluorescence/angular_distribution.py
 src/fluorescence/ion.py
 src/fluorescence/main.py
