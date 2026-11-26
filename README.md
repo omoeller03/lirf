@@ -86,6 +86,7 @@ python -m fluorescence \
 | Parameter | Description | Unit |
 |---|---|---|
 | `--beta` | Ion velocity divided by the speed of light | – |
+| `--beta-sigma` | Standard deviation of the Gaussian ion velocity (beta) distribution | – |
 | `--transition-energy` | Transition energy in the ion rest frame | eV |
 | `--laser-energy` | Central laser photon energy in the laboratory frame | eV |
 | `--laser-energy-sigma` | Standard deviation of the Gaussian laser energy distribution | eV |

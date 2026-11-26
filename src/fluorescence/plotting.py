@@ -206,6 +206,7 @@ def plot_beam_excitation(
     # Normalize in the physical beta interval
     beam /= np.trapezoid(beam, beta)
 
+
     # Excitation strength for each velocity
     #excitation = resonance.excitation_weight(laser, beta)
     excitation = resonance.excitation_weight_broadened(laser, beta)
@@ -219,19 +220,22 @@ def plot_beam_excitation(
     # x-axis in units of beam standard deviation
     x = (beta - beta_center) / beta_sigma
 
+    beam_x = beta_sigma * beam
+    excited_beam_x = beta_sigma * excited_beam
+
     fig, ax1 = plt.subplots(figsize=(9, 5))
 
     # Beam distribution
     ax1.plot(
         x,
-        beam,
+        beam_x,
         color="tab:blue",
         label="Ion beam distribution",
     )
 
     ax1.fill_between(
         x,
-        excited_beam,
+        excited_beam_x,
         color="tab:green",
         alpha=0.35,
         label="Excited ion distribution",
