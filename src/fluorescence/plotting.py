@@ -151,7 +151,8 @@ def plot_excitation_vs_beta(laser: Laser, resonance: Resonance, beta_center: flo
     beta_max = beta_resonance + 5. * beta_width
 
     beta = np.linspace(beta_min, beta_max, 2000)
-    excitation = resonance.excitation_weight(laser, beta)
+    #excitation = resonance.excitation_weight(laser, beta)
+    excitation = resonance.excitation_weight_broadened(laser, beta)
 
     delta_beta = (beta - beta_resonance) / 1e-6
 
@@ -206,7 +207,8 @@ def plot_beam_excitation(
     beam /= np.trapezoid(beam, beta)
 
     # Excitation strength for each velocity
-    excitation = resonance.excitation_weight(laser, beta)
+    #excitation = resonance.excitation_weight(laser, beta)
+    excitation = resonance.excitation_weight_broadened(laser, beta)
 
     # Distribution of excited ions
     excited_beam = beam * excitation

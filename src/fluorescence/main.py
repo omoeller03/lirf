@@ -70,18 +70,19 @@ def main() -> None:
     print(f"Backward photon energy: {spectrum.backward_energy_eV:.6g} eV")
 
     # Laser excitation
-    laser = Laser(photon_energy_eV=args.laser_energy, energy_sigma_eV=args.laser_energy_sigma, angle_rad=np.pi)
+    laser = Laser(photon_energy_eV=args.laser_energy, energy_sigma_eV=args.laser_energy_sigma, angle_rad=np.pi) # angle = pi --> antikollinear
     resonance = Resonance(transition_energy_eV=transition.energy_eV, linewidth_eV=args.linewidth)
 
     laser_energy_rest = laser.energy_in_ion_rest_frame(ion.beta)
     detuning = resonance.detuning(laser, ion.beta)
-    excitation_weight = resonance.excitation_weight(laser, ion.beta)
+    #excitation_weight = resonance.excitation_weight(laser, ion.beta)
+    excitation_weight = resonance.excitation_weight_broadened(laser, ion.beta)
 
     print("\nLaser excitation:")
-    print(f"Laser energy (lab):       {args.laser_energy:.6f} eV")
-    print(f"Laser energy (ion frame): {laser_energy_rest:.6f} eV")
-    print(f"Detuning:                 {detuning: 6f} eV")
-    print(f"Excitation weight:        {excitation_weight: 6f}")
+    print(f"Laser energy (lab):            {args.laser_energy:.6f} eV")
+    print(f"Laser energy (ion frame):      {laser_energy_rest:.6f} eV")
+    print(f"Detuning:                      {detuning: 6f} eV")
+    print(f"Excitation weight (broadened): {excitation_weight: 6f}")
 
 
 

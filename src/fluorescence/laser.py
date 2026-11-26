@@ -1,4 +1,4 @@
-
+from numpy.polynomial.hermite import hermgauss
 from dataclasses import dataclass
 
 import numpy as np
@@ -105,6 +105,7 @@ class Resonance:
 
 
 
+    """
     def excitation_weight_broadened(
             self,
             laser: Laser,
@@ -143,3 +144,82 @@ class Resonance:
                 -0.5 * (detuning / sigma_effective)**2
             )
         )
+        """
+
+
+
+
+    def excitation_weight_broadened(
+        self,
+        laser: Laser,
+        beta: np.ndarray | float,
+        n_points: int = 60,
+    ):
+        """
+        Excitation strength averaged over a Gaussian laser spectrum.
+
+        The transition line shape remains Lorentzian.
+        The laser energy distribution is Gaussian.
+
+        The convolution is calculated using Gauss-Hermite quadrature.
+        """
+
+        beta = np.asarray(beta, dtype=float)
+
+        if np.any(np.abs(beta) >= 1.0):
+            raise ValueError("Beta must satisfy |beta| < 1.")
+
+        if laser.energy_sigma_eV < 0:
+            raise ValueError("Laser energy sigma must not be negative.")
+
+        if n_points < 1:
+            raise ValueError("n_points must be positive.")
+
+        # No laser bandwidth: use the monochromatic Lorentzian.
+        if laser.energy_sigma_eV == 0:
+            return self.excitation_weight(laser, beta)
+
+        # Doppler factor for the chosen laser geometry.
+        gamma = 1.0 / np.sqrt(1.0 - beta**2)
+
+        doppler = gamma * (
+            1.0 - beta * np.cos(laser.angle_rad)
+        )
+
+        # Gauss-Hermite quadrature nodes and weights.
+        nodes, weights = hermgauss(n_points)
+
+        # Gaussian distribution of laser photon energies.
+        laser_energies = (
+            laser.photon_energy_eV
+            + np.sqrt(2.0) * laser.energy_sigma_eV * nodes
+        )
+
+        # Transform all sampled laser energies into the ion frame.
+        rest_energies = (
+            laser_energies[:, np.newaxis]
+            * np.atleast_1d(doppler).reshape(1, -1)
+        )
+
+        # Detuning for every laser energy and ion velocity.
+        detuning = rest_energies - self.transition_energy_eV
+
+        # Original Lorentzian transition profile.
+        half_width = self.linewidth_eV / 2.0
+
+        excitation = half_width**2 / (
+            detuning**2 + half_width**2
+        )
+
+        # Average over the Gaussian laser spectrum.
+        result = np.sum(
+            weights[:, np.newaxis] * excitation,
+            axis=0,
+        ) / np.sqrt(np.pi)
+
+        result = result.reshape(beta.shape)
+
+        if beta.ndim == 0:
+            return float(result)
+
+        return result
